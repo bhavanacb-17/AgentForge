@@ -1,0 +1,311 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}AgentForge | Edit Project{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <div class="form-header">
+
+        <a
+            href="{% url 'project-workspace' project.id %}"
+            class="back-link"
+        >
+            ← Back to Workspace
+        </a>
+
+        <span class="eyebrow">
+            PROJECT SETTINGS
+        </span>
+
+        <h1>Edit Project</h1>
+
+        <p>
+            Update the project configuration used by AgentForge's
+            AI engineering agents.
+        </p>
+
+    </div>
+
+
+    {% if error %}
+        <div class="error-box">
+            {{ error }}
+        </div>
+    {% endif %}
+
+
+    <form method="post" class="project-form">
+
+        {% csrf_token %}
+
+        <div class="field-grid">
+
+            <div class="field full">
+                <label>Project Name *</label>
+
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ project.name }}"
+                    required
+                >
+            </div>
+
+
+            <div class="field full">
+                <label>Description</label>
+
+                <textarea
+                    name="description"
+                    rows="4"
+                >{{ project.description }}</textarea>
+            </div>
+
+
+            <div class="field full">
+                <label>Requirements</label>
+
+                <textarea
+                    name="requirements"
+                    rows="7"
+                >{{ project.requirements }}</textarea>
+            </div>
+
+
+            <div class="field">
+                <label>Category</label>
+
+                <input
+                    type="text"
+                    name="category"
+                    value="{{ project.category }}"
+                >
+            </div>
+
+
+            <div class="field">
+                <label>Programming Language</label>
+
+                <input
+                    type="text"
+                    name="programming_language"
+                    value="{{ project.programming_language }}"
+                >
+            </div>
+
+
+            <div class="field">
+                <label>Framework</label>
+
+                <input
+                    type="text"
+                    name="framework"
+                    value="{{ project.framework }}"
+                >
+            </div>
+
+
+            <div class="field">
+                <label>Database</label>
+
+                <input
+                    type="text"
+                    name="database"
+                    value="{{ project.database }}"
+                >
+            </div>
+
+
+            <div class="field full">
+                <label>Status</label>
+
+                <select name="status">
+
+                    {% for value, label in project.STATUS_CHOICES %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if project.status == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="field full">
+                <label>Additional Instructions</label>
+
+                <textarea
+                    name="additional_instructions"
+                    rows="5"
+                >{{ project.additional_instructions }}</textarea>
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'project-workspace' project.id %}"
+                class="cancel-button"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="create-button"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+
+.form-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 24px 80px;
+}
+
+.form-header {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: #635bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.eyebrow {
+    display: block;
+    color: #635bff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.form-header h1 {
+    margin: 10px 0;
+    font-size: 38px;
+}
+
+.form-header p {
+    color: #667085;
+    line-height: 1.7;
+}
+
+.project-form {
+    padding: 32px;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 18px;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.field input,
+.field textarea,
+.field select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    font: inherit;
+}
+
+.field textarea {
+    resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    outline: none;
+    border-color: #635bff;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.cancel-button,
+.create-button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-button {
+    color: #344054;
+    border: 1px solid #d0d5dd;
+}
+
+.create-button {
+    border: none;
+    background: #111827;
+    color: white;
+}
+
+.error-box {
+    margin-bottom: 20px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    color: #b42318;
+}
+
+@media (max-width: 700px) {
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+}
+
+</style>
+
+{% endblock %}

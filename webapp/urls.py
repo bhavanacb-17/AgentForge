@@ -4,7 +4,6 @@ from . import views
 
 
 urlpatterns = [
-
     path(
         "",
         views.home,
@@ -15,6 +14,12 @@ urlpatterns = [
         "login/",
         views.login_view,
         name="login",
+    ),
+
+    path(
+        "register/",
+        views.register_view,
+        name="register",
     ),
 
     path(
@@ -30,9 +35,39 @@ urlpatterns = [
     ),
 
     path(
+        "projects/create/",
+        views.create_project,
+        name="create-project",
+    ),
+
+    path(
+        "projects/<int:project_id>/edit/",
+        views.edit_project,
+        name="edit-project",
+    ),
+
+    path(
+        "projects/<int:project_id>/delete/",
+        views.delete_project,
+        name="delete-project",
+    ),
+
+    path(
+        "projects/<int:project_id>/duplicate/",
+        views.duplicate_project,
+        name="duplicate-project",
+    ),
+
+    path(
         "projects/<int:project_id>/",
         views.project_workspace,
         name="project-workspace",
+    ),
+
+    path(
+        "projects/<int:project_id>/chat/",
+        views.project_chat,
+        name="project-chat",
     ),
 
     path(

@@ -1,0 +1,142 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}AgentForge | Delete Project{% endblock %}
+
+{% block content %}
+
+<div class="delete-page">
+
+    <div class="delete-card">
+
+        <div class="warning-icon">
+            !
+        </div>
+
+        <h1>Delete Project?</h1>
+
+        <p>
+            You are about to permanently delete:
+        </p>
+
+        <strong>
+            {{ project.name }}
+        </strong>
+
+        <p class="warning-text">
+            This action cannot be undone.
+            Generated project files and project history will also be removed.
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'project-workspace' project.id %}"
+                    class="cancel"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="delete"
+                >
+                    Delete Project
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.delete-page {
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.delete-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(16, 24, 40, .08);
+}
+
+.warning-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fef3f2;
+    color: #d92d20;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.delete-card h1 {
+    margin-bottom: 12px;
+}
+
+.delete-card p {
+    color: #667085;
+    line-height: 1.6;
+}
+
+.delete-card strong {
+    display: block;
+    margin: 12px 0;
+    font-size: 18px;
+}
+
+.warning-text {
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.cancel,
+.delete {
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel {
+    border: 1px solid #d0d5dd;
+    color: #344054;
+}
+
+.delete {
+    border: none;
+    background: #d92d20;
+    color: white;
+}
+
+</style>
+
+{% endblock %}
