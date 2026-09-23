@@ -1,0 +1,179 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}
+Settings - {{ project.name }}
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:1000px;margin:40px auto;padding:0 24px;">
+
+    <a href="{% url 'project-workspace' project.id %}">
+        ← Back to Workspace
+    </a>
+
+    <h1>Project Settings</h1>
+
+    <p>
+        Manage settings for
+        <strong>{{ project.name }}</strong>.
+    </p>
+
+
+    <div
+        style="
+            background:white;
+            border:1px solid #eaecf0;
+            border-radius:14px;
+            padding:24px;
+            margin-top:25px;
+        "
+    >
+
+        <h2>Project Information</h2>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <label>Project Name</label>
+
+            <input
+                type="text"
+                name="name"
+                value="{{ project.name }}"
+                style="width:100%;padding:12px;margin:8px 0 18px;"
+            >
+
+
+            <label>Description</label>
+
+            <textarea
+                name="description"
+                rows="5"
+                style="width:100%;padding:12px;margin:8px 0 18px;"
+            >{{ project.description }}</textarea>
+
+
+            <label>Status</label>
+
+            <select
+                name="status"
+                style="width:100%;padding:12px;margin:8px 0 18px;"
+            >
+
+                {% for value,label in project.STATUS_CHOICES %}
+
+                    <option
+                        value="{{ value }}"
+                        {% if project.status == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button
+                type="submit"
+                style="padding:12px 20px;background:#4f46e5;color:white;border:0;border-radius:8px;"
+            >
+                Save Settings
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div
+        style="
+            background:white;
+            border:1px solid #eaecf0;
+            border-radius:14px;
+            padding:24px;
+            margin-top:20px;
+        "
+    >
+
+        <h2>Workspace Actions</h2>
+
+        <p>
+            Manage the project's workspace data.
+        </p>
+
+
+        <form
+            method="post"
+            action="{% url 'archive-project' project.id %}"
+            style="margin:10px 0;"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit">
+                Archive Project
+            </button>
+
+        </form>
+
+
+        <form
+            method="post"
+            action="{% url 'restore-project' project.id %}"
+            style="margin:10px 0;"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit">
+                Restore Project
+            </button>
+
+        </form>
+
+
+        <form
+            method="post"
+            action="{% url 'clear-project-chat' project.id %}"
+            style="margin:10px 0;"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit">
+                Clear Chat
+            </button>
+
+        </form>
+
+
+        <form
+            method="post"
+            action="{% url 'delete-project-files' project.id %}"
+            style="margin:10px 0;"
+        >
+
+            {% csrf_token %}
+
+            <button type="submit">
+                Clear Generated Files
+            </button>
+
+        </form>
+
+
+        <a
+            href="{% url 'delete-project' project.id %}"
+            style="color:#b42318;"
+        >
+            Delete Project
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

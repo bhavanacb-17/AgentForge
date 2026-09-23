@@ -1,0 +1,208 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}
+Run Application - {{ project.name }} - AgentForge
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .run-page {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 70px 24px;
+    }
+
+    .run-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 12px 35px rgba(16, 24, 40, 0.08);
+    }
+
+    .run-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        background: #ecfdf3;
+    }
+
+    .run-title {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .run-subtitle {
+        margin-top: 10px;
+        color: #667085;
+    }
+
+    .success-box {
+        margin-top: 28px;
+        padding: 20px;
+        border-radius: 13px;
+        background: #ecfdf3;
+        border: 1px solid #a7f3d0;
+        color: #047857;
+    }
+
+    .error-box {
+        margin-top: 28px;
+        padding: 20px;
+        border-radius: 13px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        text-align: left;
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+
+    .url-box {
+        margin-top: 18px;
+        padding: 14px;
+        border-radius: 10px;
+        background: #f8f9fc;
+        font-family: Consolas, "Courier New", monospace;
+        color: #344054;
+    }
+
+    .actions {
+        margin-top: 28px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        border: 1px solid #d8ddea;
+        color: #344054;
+        background: white;
+    }
+
+    .btn-primary {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #4338ca;
+    }
+
+</style>
+
+
+<div class="run-page">
+
+    <div class="run-card">
+
+        {% if result.success %}
+
+            <div class="run-icon">
+                🚀
+            </div>
+
+            <h1 class="run-title">
+                Application Ready
+            </h1>
+
+            <p class="run-subtitle">
+                {{ project.name }} is running locally.
+            </p>
+
+
+            <div class="success-box">
+
+                ✓ {{ result.message }}
+
+                <div class="url-box">
+                    {{ result.url }}
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <a
+                    href="{{ result.url }}"
+                    target="_blank"
+                    class="btn btn-primary"
+                >
+                    🚀 Open Application
+                </a>
+
+
+                <a
+                    href="{% url 'project-files' project.id %}"
+                    class="btn"
+                >
+                    ← Generated Files
+                </a>
+
+            </div>
+
+
+        {% else %}
+
+            <div
+                class="run-icon"
+                style="
+                    background:#fef2f2;
+                "
+            >
+                ⚠️
+            </div>
+
+            <h1 class="run-title">
+                Application Could Not Start
+            </h1>
+
+            <p class="run-subtitle">
+                AgentForge could not start the generated Django application.
+            </p>
+
+
+            <div class="error-box">
+                {{ result.message }}
+            </div>
+
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'project-files' project.id %}"
+                    class="btn btn-primary"
+                >
+                    ← Back to Generated Files
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

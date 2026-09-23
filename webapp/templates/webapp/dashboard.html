@@ -1,33 +1,333 @@
 {% extends "webapp/base.html" %}
 
 {% block title %}
-    AgentForge | Projects
+AgentForge - Projects
 {% endblock %}
-
 
 {% block content %}
 
+<style>
+
+    .dashboard-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 24px 70px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+        margin: 0;
+        font-size: 34px;
+        font-weight: 800;
+        color: #101828;
+    }
+
+    .dashboard-subtitle {
+        margin: 8px 0 0;
+        color: #667085;
+        font-size: 15px;
+    }
+
+    .new-project-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: 10px;
+        background: #4f46e5;
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .new-project-btn:hover {
+        background: #4338ca;
+        transform: translateY(-1px);
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+        padding: 18px;
+        background: white;
+        border: 1px solid #eaecf0;
+        border-radius: 14px;
+    }
+
+    .search-form {
+        display: flex;
+        flex: 1;
+        min-width: 260px;
+        gap: 10px;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 12px 14px;
+        border: 1px solid #d0d5dd;
+        border-radius: 9px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .search-btn {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 9px;
+        background: #101828;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .status-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 9px 14px;
+        border-radius: 8px;
+        border: 1px solid #d0d5dd;
+        background: white;
+        color: #475467;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: #eef2ff;
+        border-color: #818cf8;
+        color: #3730a3;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .project-card {
+        background: white;
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        padding: 22px;
+        transition: 0.2s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-2px);
+        border-color: #c7d2fe;
+        box-shadow: 0 8px 25px rgba(16, 24, 40, 0.08);
+    }
+
+    .project-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .project-name {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 750;
+        color: #101828;
+    }
+
+    .project-description {
+        margin: 8px 0 0;
+        color: #667085;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        white-space: nowrap;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #ecfdf3;
+        color: #027a48;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .project-meta {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid #f2f4f7;
+    }
+
+    .meta-item {
+        padding: 12px;
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .meta-label {
+        display: block;
+        color: #98a2b3;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+    }
+
+    .meta-value {
+        color: #344054;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .project-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        border: 1px solid #d0d5dd;
+        background: white;
+        color: #344054;
+        transition: 0.2s ease;
+    }
+
+    .action-btn:hover {
+        background: #f9fafb;
+    }
+
+    .action-btn.primary {
+        background: #4f46e5;
+        color: white;
+        border-color: #4f46e5;
+    }
+
+    .action-btn.primary:hover {
+        background: #4338ca;
+    }
+
+    .action-btn.edit {
+        color: #344054;
+    }
+
+    .action-btn.delete {
+        color: #b42318;
+        border-color: #fecdca;
+    }
+
+    .empty-state {
+        padding: 70px 24px;
+        text-align: center;
+        background: white;
+        border: 1px dashed #d0d5dd;
+        border-radius: 16px;
+    }
+
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 14px;
+    }
+
+    .empty-title {
+        margin: 0;
+        color: #101828;
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .empty-description {
+        color: #667085;
+        margin: 8px auto 22px;
+        max-width: 500px;
+    }
+
+    @media (max-width: 800px) {
+
+        .dashboard-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .dashboard-page {
+            padding: 25px 16px 50px;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+        }
+
+        .toolbar {
+            padding: 14px;
+        }
+
+        .search-form {
+            min-width: 100%;
+        }
+
+        .project-meta {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
 <div class="dashboard-page">
 
+    <!-- Header -->
 
-    <!-- =========================================
-         HEADER
-    ========================================= -->
-
-    <section class="dashboard-header">
+    <div class="dashboard-header">
 
         <div>
 
-            <div class="eyebrow">
-                AI SOFTWARE WORKSPACE
-            </div>
-
-            <h1>
-                My Projects
+            <h1 class="dashboard-title">
+                Your Projects
             </h1>
 
-            <p>
-                Build, manage and develop software with autonomous AI agents.
+            <p class="dashboard-subtitle">
+                Build, manage and develop software with AgentForge AI agents.
             </p>
 
         </div>
@@ -35,1388 +335,254 @@
 
         <a
             href="{% url 'create-project' %}"
-            class="new-project-button"
+            class="new-project-btn"
         >
-            <span>+</span>
-            New Project
+            + New Project
         </a>
-
-    </section>
-
-
-    <!-- =========================================
-         SEARCH / FILTER BAR
-    ========================================= -->
-
-    <section class="toolbar">
-
-        <form
-            method="get"
-            class="search-form"
-        >
-
-            <div class="search-box">
-
-                <span class="search-icon">
-                    ⌕
-                </span>
-
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ search }}"
-                    placeholder="Search projects..."
-                >
-
-            </div>
-
-
-            <select
-                name="status"
-                class="status-select"
-            >
-
-                <option value="">
-                    All Status
-                </option>
-
-                <option
-                    value="active"
-                    {% if selected_status == "active" %}
-                        selected
-                    {% endif %}
-                >
-                    Active
-                </option>
-
-                <option
-                    value="in_progress"
-                    {% if selected_status == "in_progress" %}
-                        selected
-                    {% endif %}
-                >
-                    In Progress
-                </option>
-
-                <option
-                    value="completed"
-                    {% if selected_status == "completed" %}
-                        selected
-                    {% endif %}
-                >
-                    Completed
-                </option>
-
-                <option
-                    value="archived"
-                    {% if selected_status == "archived" %}
-                        selected
-                    {% endif %}
-                >
-                    Archived
-                </option>
-
-            </select>
-
-
-            <button
-                type="submit"
-                class="filter-button"
-            >
-                Search
-            </button>
-
-
-            {% if search or selected_status %}
-
-                <a
-                    href="{% url 'dashboard' %}"
-                    class="clear-button"
-                >
-                    Clear
-                </a>
-
-            {% endif %}
-
-        </form>
-
-    </section>
-
-
-    <!-- =========================================
-         PROJECT COUNT
-    ========================================= -->
-
-    <div class="project-summary">
-
-        <div>
-
-            <strong>
-                {{ projects|length }}
-            </strong>
-
-            project{{ projects|length|pluralize }}
-
-        </div>
-
-        {% if search %}
-            <span>
-                Searching for "{{ search }}"
-            </span>
-        {% endif %}
 
     </div>
 
 
-    <!-- =========================================
-         PROJECT GRID
-    ========================================= -->
+    <!-- Search and Filters -->
+
+    <div class="toolbar">
+
+        <form
+            method="get"
+            action="{% url 'dashboard' %}"
+            class="search-form"
+        >
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                class="search-input"
+                placeholder="Search projects..."
+            >
+
+            {% if selected_status %}
+                <input
+                    type="hidden"
+                    name="status"
+                    value="{{ selected_status }}"
+                >
+            {% endif %}
+
+            <button
+                type="submit"
+                class="search-btn"
+            >
+                Search
+            </button>
+
+        </form>
+
+
+        <div class="status-filters">
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="filter-btn {% if not selected_status %}active{% endif %}"
+            >
+                All
+            </a>
+
+            <a
+                href="{% url 'dashboard' %}?status=active"
+                class="filter-btn {% if selected_status == 'active' %}active{% endif %}"
+            >
+                Active
+            </a>
+
+            <a
+                href="{% url 'dashboard' %}?status=in_progress"
+                class="filter-btn {% if selected_status == 'in_progress' %}active{% endif %}"
+            >
+                In Progress
+            </a>
+
+            <a
+                href="{% url 'dashboard' %}?status=completed"
+                class="filter-btn {% if selected_status == 'completed' %}active{% endif %}"
+            >
+                Completed
+            </a>
+
+            <a
+                href="{% url 'dashboard' %}?status=archived"
+                class="filter-btn {% if selected_status == 'archived' %}active{% endif %}"
+            >
+                Archived
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Projects -->
 
     {% if projects %}
 
-        <section class="project-grid">
+        <div class="projects-grid">
 
             {% for project in projects %}
 
+                <div class="project-card">
 
-                <article class="project-card">
+                    <div class="project-top">
 
+                        <div>
 
-                    <!-- CARD TOP -->
+                            <h2 class="project-name">
+                                {{ project.name }}
+                            </h2>
 
-                    <div class="card-top">
+                            <p class="project-description">
+                                {{ project.description|default:"No project description provided." }}
+                            </p>
 
-                        <div class="project-icon">
-                            {{ project.name|first|upper }}
                         </div>
 
 
-                        <span
-                            class="status-badge
-                            status-{{ project.status }}"
-                        >
-                            {{ project.status|title }}
+                        <span class="status-badge">
+                            {{ project.get_status_display }}
                         </span>
 
                     </div>
 
 
-                    <!-- CARD CONTENT -->
+                    <div class="project-meta">
 
-                    <div class="card-content">
+                        <div class="meta-item">
 
-                        <h2>
-                            {{ project.name }}
-                        </h2>
+                            <span class="meta-label">
+                                Language
+                            </span>
 
-
-                        <p class="project-description">
-
-                            {% if project.description %}
-
-                                {{ project.description|truncatechars:125 }}
-
-                            {% else %}
-
-                                No description provided.
-
-                            {% endif %}
-
-                        </p>
-
-
-                        <!-- TECHNOLOGY -->
-
-                        <div class="technology-tags">
-
-                            {% if project.programming_language %}
-
-                                <span>
-                                    {{ project.programming_language }}
-                                </span>
-
-                            {% endif %}
-
-
-                            {% if project.framework %}
-
-                                <span>
-                                    {{ project.framework }}
-                                </span>
-
-                            {% endif %}
-
-
-                            {% if project.database %}
-
-                                <span>
-                                    {{ project.database }}
-                                </span>
-
-                            {% endif %}
-
-
-                            {% if project.category %}
-
-                                <span>
-                                    {{ project.category }}
-                                </span>
-
-                            {% endif %}
+                            <span class="meta-value">
+                                {{ project.programming_language|default:"Not specified" }}
+                            </span>
 
                         </div>
 
-                    </div>
+
+                        <div class="meta-item">
+
+                            <span class="meta-label">
+                                Framework
+                            </span>
+
+                            <span class="meta-value">
+                                {{ project.framework|default:"Not specified" }}
+                            </span>
+
+                        </div>
 
 
-                    <!-- CARD FOOTER -->
+                        <div class="meta-item">
 
-                    <div class="card-footer">
+                            <span class="meta-label">
+                                Database
+                            </span>
+
+                            <span class="meta-value">
+                                {{ project.database|default:"Not specified" }}
+                            </span>
+
+                        </div>
 
 
-                        <div class="updated-info">
+                        <div class="meta-item">
 
-                            <span class="updated-label">
+                            <span class="meta-label">
                                 Updated
                             </span>
 
-                            <span>
-                                {{ project.updated_at|date:"M d, Y" }}
+                            <span class="meta-value">
+                                {{ project.updated_at|date:"d M Y" }}
                             </span>
-
-                        </div>
-
-
-                        <div class="card-actions">
-
-
-                            <!-- OPEN -->
-
-                            <a
-                                href="{% url 'project-workspace' project.id %}"
-                                class="open-button"
-                            >
-                                Open
-                                <span>→</span>
-                            </a>
-
-
-                            <!-- EDIT -->
-
-                            <a
-                                href="{% url 'edit-project' project.id %}"
-                                class="action-button"
-                                title="Edit project"
-                            >
-                                ✎
-                            </a>
-
-
-                            <!-- DUPLICATE -->
-
-                            <a
-                                href="{% url 'duplicate-project' project.id %}"
-                                class="action-button"
-                                title="Duplicate project"
-                            >
-                                ⧉
-                            </a>
-
-
-                            <!-- DELETE -->
-
-                            <a
-                                href="{% url 'delete-project' project.id %}"
-                                class="delete-button"
-                                title="Delete project"
-                            >
-                                ×
-                            </a>
 
                         </div>
 
                     </div>
 
-                </article>
 
+                    <!-- IMPORTANT:
+                         Open always goes to PROJECT WORKSPACE.
+                         It does NOT go to AI CHAT.
+                    -->
+
+                    <div class="project-actions">
+
+                        <a
+                            href="{% url 'project-workspace' project.id %}"
+                            class="action-btn primary"
+                        >
+                            Open
+                        </a>
+
+
+                        <a
+                            href="{% url 'edit-project' project.id %}"
+                            class="action-btn edit"
+                        >
+                            Edit
+                        </a>
+
+
+                        <a
+                            href="{% url 'duplicate-project' project.id %}"
+                            class="action-btn"
+                        >
+                            Duplicate
+                        </a>
+
+
+                        <a
+                            href="{% url 'delete-project' project.id %}"
+                            class="action-btn delete"
+                        >
+                            Delete
+                        </a>
+
+                    </div>
+
+                </div>
 
             {% endfor %}
 
-        </section>
-
+        </div>
 
     {% else %}
 
-
-        <!-- =========================================
-             EMPTY STATE
-        ========================================= -->
-
-        <section class="empty-state">
-
+        <div class="empty-state">
 
             <div class="empty-icon">
-                ✦
+                🚀
             </div>
 
+            <h2 class="empty-title">
+                No projects found
+            </h2>
 
-            {% if search or selected_status %}
+            <p class="empty-description">
+                Create your first AgentForge project and start building
+                software with the autonomous AI agent pipeline.
+            </p>
 
-                <h2>
-                    No matching projects
-                </h2>
+            <a
+                href="{% url 'create-project' %}"
+                class="new-project-btn"
+            >
+                + Create Your First Project
+            </a>
 
-                <p>
-                    No projects match your current search or filter.
-                    Try changing your search criteria.
-                </p>
-
-
-                <a
-                    href="{% url 'dashboard' %}"
-                    class="secondary-button"
-                >
-                    Clear Filters
-                </a>
-
-
-            {% else %}
-
-                <h2>
-                    No projects yet
-                </h2>
-
-                <p>
-                    Create your first AI-powered software project
-                    and let AgentForge's engineering agents build it.
-                </p>
-
-
-                <a
-                    href="{% url 'create-project' %}"
-                    class="new-project-button empty-button"
-                >
-                    <span>+</span>
-                    Create Your First Project
-                </a>
-
-            {% endif %}
-
-
-        </section>
-
+        </div>
 
     {% endif %}
 
-
 </div>
-
-
-<!-- =========================================
-     DASHBOARD STYLES
-========================================= -->
-
-<style>
-
-
-    /* =========================================
-       PAGE
-    ========================================= */
-
-    .dashboard-page {
-
-        max-width: 1240px;
-
-        margin: 0 auto;
-
-        padding:
-            52px
-            28px
-            90px;
-
-    }
-
-
-    /* =========================================
-       HEADER
-    ========================================= */
-
-    .dashboard-header {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: flex-end;
-
-        gap: 30px;
-
-        margin-bottom: 32px;
-
-    }
-
-
-    .eyebrow {
-
-        display: inline-block;
-
-        color: #635bff;
-
-        font-size: 11px;
-
-        font-weight: 800;
-
-        letter-spacing: 1.5px;
-
-    }
-
-
-    .dashboard-header h1 {
-
-        margin:
-            9px
-            0
-            7px;
-
-        color: #101828;
-
-        font-size: 38px;
-
-        line-height: 1.15;
-
-        letter-spacing: -1.2px;
-
-    }
-
-
-    .dashboard-header p {
-
-        margin: 0;
-
-        color: #667085;
-
-        font-size: 15px;
-
-    }
-
-
-    /* =========================================
-       NEW PROJECT
-    ========================================= */
-
-    .new-project-button {
-
-        display: inline-flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        gap: 8px;
-
-        min-height: 44px;
-
-        padding:
-            0
-            17px;
-
-        border-radius: 10px;
-
-        background: #111827;
-
-        color: white;
-
-        font-size: 13px;
-
-        font-weight: 700;
-
-        text-decoration: none;
-
-        border: 1px solid #111827;
-
-        box-shadow:
-            0
-            5px
-            14px
-            rgba(16, 24, 40, .10);
-
-        transition:
-            transform .18s ease,
-            background .18s ease;
-
-    }
-
-
-    .new-project-button span {
-
-        font-size: 19px;
-
-        line-height: 1;
-
-    }
-
-
-    .new-project-button:hover {
-
-        background: #1f2937;
-
-        transform:
-            translateY(-1px);
-
-    }
-
-
-    /* =========================================
-       TOOLBAR
-    ========================================= */
-
-    .toolbar {
-
-        margin-bottom: 15px;
-
-    }
-
-
-    .search-form {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 9px;
-
-    }
-
-
-    .search-box {
-
-        width: 100%;
-
-        max-width: 520px;
-
-        height: 44px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 9px;
-
-        padding:
-            0
-            13px;
-
-        background: white;
-
-        border:
-            1px
-            solid
-            #dfe3ea;
-
-        border-radius: 10px;
-
-        transition:
-            border-color .18s ease,
-            box-shadow .18s ease;
-
-    }
-
-
-    .search-box:focus-within {
-
-        border-color: #635bff;
-
-        box-shadow:
-            0
-            0
-            0
-            3px
-            rgba(99, 91, 255, .08);
-
-    }
-
-
-    .search-icon {
-
-        color: #98a2b3;
-
-        font-size: 20px;
-
-    }
-
-
-    .search-box input {
-
-        width: 100%;
-
-        border: none;
-
-        outline: none;
-
-        background: transparent;
-
-        color: #101828;
-
-        font-size: 14px;
-
-    }
-
-
-    .search-box input::placeholder {
-
-        color: #98a2b3;
-
-    }
-
-
-    .status-select {
-
-        height: 44px;
-
-        padding:
-            0
-            12px;
-
-        border:
-            1px
-            solid
-            #dfe3ea;
-
-        border-radius: 10px;
-
-        background: white;
-
-        color: #344054;
-
-        outline: none;
-
-        cursor: pointer;
-
-        font-size: 13px;
-
-    }
-
-
-    .status-select:focus {
-
-        border-color: #635bff;
-
-    }
-
-
-    .filter-button {
-
-        height: 44px;
-
-        padding:
-            0
-            17px;
-
-        border: none;
-
-        border-radius: 10px;
-
-        background: #635bff;
-
-        color: white;
-
-        font-size: 13px;
-
-        font-weight: 700;
-
-        cursor: pointer;
-
-    }
-
-
-    .filter-button:hover {
-
-        background: #554de8;
-
-    }
-
-
-    .clear-button {
-
-        padding:
-            0
-            8px;
-
-        color: #667085;
-
-        font-size: 13px;
-
-        font-weight: 600;
-
-        text-decoration: none;
-
-    }
-
-
-    .clear-button:hover {
-
-        color: #101828;
-
-    }
-
-
-    /* =========================================
-       PROJECT SUMMARY
-    ========================================= */
-
-    .project-summary {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-
-        margin:
-            21px
-            0
-            15px;
-
-        color: #98a2b3;
-
-        font-size: 12px;
-
-    }
-
-
-    .project-summary strong {
-
-        color: #344054;
-
-        font-size: 13px;
-
-    }
-
-
-    /* =========================================
-       PROJECT GRID
-    ========================================= */
-
-    .project-grid {
-
-        display: grid;
-
-        grid-template-columns:
-            repeat(
-                3,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
-
-        gap: 20px;
-
-    }
-
-
-    /* =========================================
-       PROJECT CARD
-    ========================================= */
-
-    .project-card {
-
-        min-height: 285px;
-
-        display: flex;
-
-        flex-direction: column;
-
-        justify-content: space-between;
-
-        background: white;
-
-        border:
-            1px
-            solid
-            #e7eaf0;
-
-        border-radius: 16px;
-
-        padding: 23px;
-
-        box-shadow:
-            0
-            2px
-            6px
-            rgba(16, 24, 40, .02);
-
-        transition:
-            transform .2s ease,
-            box-shadow .2s ease,
-            border-color .2s ease;
-
-    }
-
-
-    .project-card:hover {
-
-        transform:
-            translateY(-3px);
-
-        border-color: #d9d6ff;
-
-        box-shadow:
-            0
-            14px
-            35px
-            rgba(16, 24, 40, .08);
-
-    }
-
-
-    /* =========================================
-       CARD TOP
-    ========================================= */
-
-    .card-top {
-
-        display: flex;
-
-        justify-content: space-between;
-
-        align-items: center;
-
-    }
-
-
-    .project-icon {
-
-        width: 45px;
-
-        height: 45px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 12px;
-
-        background: #eeecff;
-
-        color: #635bff;
-
-        font-size: 17px;
-
-        font-weight: 800;
-
-    }
-
-
-    /* =========================================
-       STATUS
-    ========================================= */
-
-    .status-badge {
-
-        padding:
-            5px
-            10px;
-
-        border-radius: 20px;
-
-        font-size: 11px;
-
-        font-weight: 700;
-
-    }
-
-
-    .status-active {
-
-        background: #ecfdf3;
-
-        color: #027a48;
-
-    }
-
-
-    .status-in_progress {
-
-        background: #fffaeb;
-
-        color: #b54708;
-
-    }
-
-
-    .status-completed {
-
-        background: #eff8ff;
-
-        color: #175cd3;
-
-    }
-
-
-    .status-archived {
-
-        background: #f2f4f7;
-
-        color: #475467;
-
-    }
-
-
-    /* =========================================
-       CARD CONTENT
-    ========================================= */
-
-    .card-content h2 {
-
-        margin:
-            19px
-            0
-            8px;
-
-        color: #101828;
-
-        font-size: 19px;
-
-        line-height: 1.3;
-
-        letter-spacing: -.3px;
-
-    }
-
-
-    .project-description {
-
-        min-height: 45px;
-
-        margin: 0;
-
-        color: #667085;
-
-        font-size: 13px;
-
-        line-height: 1.65;
-
-    }
-
-
-    /* =========================================
-       TECHNOLOGY TAGS
-    ========================================= */
-
-    .technology-tags {
-
-        display: flex;
-
-        flex-wrap: wrap;
-
-        gap: 6px;
-
-        margin-top: 17px;
-
-    }
-
-
-    .technology-tags span {
-
-        padding:
-            5px
-            9px;
-
-        border-radius: 6px;
-
-        background: #f2f4f7;
-
-        color: #475467;
-
-        font-size: 10px;
-
-        font-weight: 600;
-
-    }
-
-
-    /* =========================================
-       CARD FOOTER
-    ========================================= */
-
-    .card-footer {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        gap: 10px;
-
-        margin-top: 25px;
-
-        padding-top: 17px;
-
-        border-top:
-            1px
-            solid
-            #eef0f4;
-
-    }
-
-
-    .updated-info {
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 2px;
-
-        color: #98a2b3;
-
-        font-size: 10px;
-
-    }
-
-
-    .updated-label {
-
-        font-weight: 600;
-
-        text-transform: uppercase;
-
-        letter-spacing: .4px;
-
-    }
-
-
-    .card-actions {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 5px;
-
-    }
-
-
-    /* =========================================
-       OPEN BUTTON
-    ========================================= */
-
-    .open-button {
-
-        display: inline-flex;
-
-        align-items: center;
-
-        gap: 5px;
-
-        padding:
-            8px
-            12px;
-
-        border-radius: 8px;
-
-        background: #111827;
-
-        color: white;
-
-        font-size: 11px;
-
-        font-weight: 700;
-
-        text-decoration: none;
-
-    }
-
-
-    .open-button:hover {
-
-        background: #1f2937;
-
-    }
-
-
-    /* =========================================
-       ACTION BUTTONS
-    ========================================= */
-
-    .action-button,
-    .delete-button {
-
-        width: 32px;
-
-        height: 32px;
-
-        display: inline-flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border:
-            1px
-            solid
-            #e4e7ec;
-
-        border-radius: 8px;
-
-        background: white;
-
-        color: #475467;
-
-        font-size: 14px;
-
-        text-decoration: none;
-
-        transition:
-            background .15s ease,
-            color .15s ease;
-
-    }
-
-
-    .action-button:hover {
-
-        background: #f2f4f7;
-
-        color: #101828;
-
-    }
-
-
-    .delete-button {
-
-        color: #d92d20;
-
-    }
-
-
-    .delete-button:hover {
-
-        background: #fef3f2;
-
-    }
-
-
-    /* =========================================
-       EMPTY STATE
-    ========================================= */
-
-    .empty-state {
-
-        padding:
-            85px
-            30px;
-
-        text-align: center;
-
-        background: white;
-
-        border:
-            1px
-            solid
-            #e7eaf0;
-
-        border-radius: 18px;
-
-    }
-
-
-    .empty-icon {
-
-        width: 62px;
-
-        height: 62px;
-
-        margin:
-            0
-            auto
-            20px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 17px;
-
-        background: #eeecff;
-
-        color: #635bff;
-
-        font-size: 27px;
-
-    }
-
-
-    .empty-state h2 {
-
-        margin:
-            0
-            0
-            9px;
-
-        font-size: 22px;
-
-    }
-
-
-    .empty-state p {
-
-        max-width: 500px;
-
-        margin:
-            0
-            auto
-            25px;
-
-        color: #667085;
-
-        line-height: 1.6;
-
-        font-size: 14px;
-
-    }
-
-
-    .empty-button {
-
-        display: inline-flex;
-
-    }
-
-
-    .secondary-button {
-
-        display: inline-flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        padding:
-            11px
-            17px;
-
-        border:
-            1px
-            solid
-            #d0d5dd;
-
-        border-radius: 9px;
-
-        background: white;
-
-        color: #344054;
-
-        font-size: 13px;
-
-        font-weight: 700;
-
-        text-decoration: none;
-
-    }
-
-
-    /* =========================================
-       RESPONSIVE
-    ========================================= */
-
-    @media (max-width: 1000px) {
-
-        .project-grid {
-
-            grid-template-columns:
-                repeat(
-                    2,
-                    minmax(
-                        0,
-                        1fr
-                    )
-                );
-
-        }
-
-    }
-
-
-    @media (max-width: 700px) {
-
-        .dashboard-page {
-
-            padding:
-                35px
-                17px
-                60px;
-
-        }
-
-
-        .dashboard-header {
-
-            flex-direction: column;
-
-            align-items: flex-start;
-
-        }
-
-
-        .dashboard-header h1 {
-
-            font-size: 32px;
-
-        }
-
-
-        .search-form {
-
-            flex-wrap: wrap;
-
-        }
-
-
-        .search-box {
-
-            max-width: none;
-
-            min-width: 100%;
-
-        }
-
-
-        .project-grid {
-
-            grid-template-columns: 1fr;
-
-        }
-
-
-        .card-footer {
-
-            align-items: flex-start;
-
-            flex-direction: column;
-
-        }
-
-
-        .project-summary {
-
-            align-items: flex-start;
-
-            flex-direction: column;
-
-            gap: 5px;
-
-        }
-
-    }
-
-
-</style>
 
 {% endblock %}

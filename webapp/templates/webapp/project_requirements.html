@@ -1,0 +1,46 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}
+Requirements - {{ project.name }}
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:1000px;margin:40px auto;padding:0 24px;">
+
+    <a href="{% url 'project-workspace' project.id %}">
+        ← Back to Workspace
+    </a>
+
+    <h1>Project Requirements</h1>
+
+    <p>
+        Define and update the requirements for
+        <strong>{{ project.name }}</strong>.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Requirements</label>
+
+        <textarea
+            name="requirements"
+            rows="12"
+            style="width:100%;padding:14px;margin-top:8px;"
+        >{{ project.requirements }}</textarea>
+
+        <br><br>
+
+        <button
+            type="submit"
+            style="padding:12px 20px;background:#4f46e5;color:white;border:0;border-radius:8px;"
+        >
+            Save Requirements
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}
+{{ file.name }} - Inspect - AgentForge
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .inspect-page {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 35px 24px 70px;
+    }
+
+    .inspect-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 22px;
+    }
+
+    .inspect-title {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .inspect-path {
+        margin-top: 7px;
+        color: #667085;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+    }
+
+    .inspect-actions {
+        display: flex;
+        gap: 9px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 10px 15px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid #d8ddea;
+        background: white;
+        color: #344054;
+    }
+
+    .btn:hover {
+        background: #f8f9fc;
+    }
+
+    .btn-primary {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: white;
+    }
+
+    .code-card {
+        background: #111827;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(16, 24, 40, 0.12);
+    }
+
+    .code-toolbar {
+        background: #1f2937;
+        color: #d1d5db;
+        padding: 13px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .code-label {
+        font-weight: 700;
+    }
+
+    .code-language {
+        color: #9ca3af;
+    }
+
+    .code-container {
+        overflow: auto;
+        max-height: 75vh;
+    }
+
+    pre {
+        margin: 0;
+        padding: 24px;
+        color: #e5e7eb;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.65;
+        white-space: pre;
+        tab-size: 4;
+    }
+
+    @media (max-width: 700px) {
+
+        .inspect-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .inspect-actions {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="inspect-page">
+
+    <div class="inspect-header">
+
+        <div>
+
+            <h1 class="inspect-title">
+                👁 {{ file.name }}
+            </h1>
+
+            <div class="inspect-path">
+                {{ file.path }}
+            </div>
+
+        </div>
+
+
+        <div class="inspect-actions">
+
+            <a
+                href="{% url 'project-files' project.id %}"
+                class="btn"
+            >
+                ← Generated Files
+            </a>
+
+            <a
+                href="{% url 'download-project-file' project.id %}?path={{ file.path|urlencode }}"
+                class="btn btn-primary"
+            >
+                ⬇ Download
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="code-card">
+
+        <div class="code-toolbar">
+
+            <span class="code-label">
+                Source Code
+            </span>
+
+            <span class="code-language">
+                {{ project.programming_language|default:"Python" }}
+            </span>
+
+        </div>
+
+
+        <div class="code-container">
+
+            <pre>{{ content }}</pre>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

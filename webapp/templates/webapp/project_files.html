@@ -1,287 +1,372 @@
 {% extends "webapp/base.html" %}
 
-{% block title %}Generated Files | {{ project.name }}{% endblock %}
+{% block title %}Generated Files - AgentForge{% endblock %}
 
 {% block content %}
 
 <style>
-    .files-page {
-        max-width: 1200px;
-        margin: auto;
-        padding: 35px 24px 60px;
-    }
 
-    .files-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 28px;
-    }
+.files-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 25px;
+}
 
-    .back-link {
-        color: #667085;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-    }
+.files-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
 
-    .back-link:hover {
-        color: #4f46e5;
-    }
+.files-title {
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0;
+    color: #172033;
+}
 
-    .files-header h1 {
-        margin: 10px 0 6px;
-        font-size: 32px;
-        color: #101828;
-    }
+.files-subtitle {
+    margin-top: 8px;
+    color: #667085;
+}
 
-    .files-header p {
-        margin: 0;
-        color: #667085;
-    }
+.actions {
+    display: flex;
+    gap: 10px;
+}
 
-    .files-card {
-        background: white;
-        border: 1px solid #eaecf0;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 18px rgba(16, 24, 40, 0.05);
-    }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 17px;
+    border-radius: 10px;
+    border: 1px solid #d9dce5;
+    background: white;
+    color: #344054;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+}
 
-    .files-toolbar {
-        padding: 20px 24px;
-        border-bottom: 1px solid #eaecf0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.btn-primary {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: white;
+}
 
-    .files-count {
-        font-weight: 700;
-        color: #344054;
-    }
+.btn-success {
+    background: #059669;
+    border-color: #059669;
+    color: white;
+}
 
-    .file-row {
-        display: grid;
-        grid-template-columns: 1fr 160px 100px;
-        gap: 20px;
-        align-items: center;
-        padding: 17px 24px;
-        border-bottom: 1px solid #f2f4f7;
-    }
+.btn-inspect {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #4338ca;
+}
 
-    .file-row:last-child {
-        border-bottom: none;
-    }
+.files-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    overflow: hidden;
+}
 
-    .file-row:hover {
-        background: #f9fafb;
-    }
+.files-card-header {
+    padding: 22px 25px;
+    border-bottom: 1px solid #eaecf0;
+}
 
-    .file-name {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-width: 0;
-    }
+.files-card-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #172033;
+}
 
-    .file-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 9px;
-        background: #eef2ff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #4f46e5;
-        font-size: 18px;
-        flex-shrink: 0;
-    }
+.files-card-subtitle {
+    margin-top: 5px;
+    color: #667085;
+    font-size: 14px;
+}
 
-    .file-info {
-        min-width: 0;
-    }
+.files-table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-    .file-title {
-        font-weight: 700;
-        color: #101828;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+.files-table th {
+    text-align: left;
+    padding: 15px 20px;
+    background: #f8f9fc;
+    color: #667085;
+    font-size: 12px;
+    text-transform: uppercase;
+}
 
-    .file-path {
-        margin-top: 3px;
-        font-size: 12px;
-        color: #98a2b3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+.files-table td {
+    padding: 17px 20px;
+    border-top: 1px solid #f0f2f5;
+}
 
-    .file-size {
-        color: #667085;
-        font-size: 13px;
-    }
+.file-name {
+    font-weight: 700;
+    color: #172033;
+}
 
-    .view-button {
-        display: inline-block;
-        padding: 8px 14px;
-        border-radius: 8px;
-        background: #f2f4f7;
-        color: #344054;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        text-align: center;
-    }
+.file-path {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    color: #667085;
+}
 
-    .view-button:hover {
-        background: #e4e7ec;
-    }
+.file-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
 
-    .empty-state {
-        padding: 70px 20px;
-        text-align: center;
-        color: #667085;
-    }
+.small-btn {
+    padding: 8px 11px;
+    font-size: 13px;
+}
 
-    .empty-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
+.run-section {
+    margin: 25px;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #c7d2fe;
+    background: #f8faff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
 
-    @media (max-width: 750px) {
-        .files-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-        }
+.run-title {
+    margin: 0 0 7px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #172033;
+}
 
-        .file-row {
-            grid-template-columns: 1fr;
-            gap: 8px;
-        }
-    }
+.run-description {
+    margin: 0;
+    color: #667085;
+    font-size: 14px;
+}
+
 </style>
 
 
 <div class="files-page">
 
+    <!-- HEADER -->
+
     <div class="files-header">
 
         <div>
 
+            <h1 class="files-title">
+                Generated Files
+            </h1>
+
+            <div class="files-subtitle">
+                {{ project.name }}
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
             <a
                 href="{% url 'project-workspace' project.id %}"
-                class="back-link"
+                class="btn"
             >
-                ← Back to Workspace
+                ← Workspace
             </a>
 
-            <h1>Generated Files</h1>
-
-            <p>
-                Files generated for {{ project.name }}
-            </p>
+            <a
+                href="{% url 'download-project-zip' project.id %}"
+                class="btn btn-primary"
+            >
+                ↓ Download All as ZIP
+            </a>
 
         </div>
 
     </div>
 
 
+    <!-- FILES -->
+
     <div class="files-card">
 
-        <div class="files-toolbar">
+        <div class="files-card-header">
 
-            <div class="files-count">
-                {{ files|length }} generated file{{ files|length|pluralize }}
+            <div class="files-card-title">
+                Project Source Files
+            </div>
+
+            <div class="files-card-subtitle">
+                Inspect and download files generated by AgentForge.
             </div>
 
         </div>
 
 
-        {% if files %}
+        <table class="files-table">
 
-            {% for file in files %}
+            <thead>
 
-                <div class="file-row">
+                <tr>
 
-                    <div class="file-name">
+                    <th>
+                        File
+                    </th>
 
-                        <div class="file-icon">
-                            📄
+                    <th>
+                        Path
+                    </th>
+
+                    <th>
+                        Size
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for file in files %}
+
+                <tr>
+
+                    <td>
+
+                        <span class="file-name">
+                            📄 {{ file.name }}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="file-path">
+                            {{ file.path }}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        {{ file.size }} B
+                    </td>
+
+
+                    <td>
+
+                        <div class="file-actions">
+
+                            <!-- INSPECT -->
+
+                            <a
+                                href="{% url 'inspect-project-file' project.id %}?path={{ file.path|urlencode }}"
+                                target="_blank"
+                                class="btn btn-inspect small-btn"
+                            >
+                                👁 Inspect
+                            </a>
+
+
+                            <!-- DOWNLOAD -->
+
+                            <a
+                                href="{% url 'download-project-file' project.id %}?path={{ file.path|urlencode }}"
+                                class="btn small-btn"
+                            >
+                                ↓ Download
+                            </a>
+
                         </div>
 
-                        <div class="file-info">
+                    </td>
 
-                            <div class="file-title">
-                                {{ file.name }}
-                            </div>
+                </tr>
 
-                            <div class="file-path">
-                                {{ file.path }}
-                            </div>
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        <div style="
+                            padding:60px;
+                            text-align:center;
+                            color:#667085;
+                        ">
+
+                            No generated files yet.
 
                         </div>
 
-                    </div>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
 
 
-                    <div class="file-size">
+        <!-- RUN APPLICATION -->
 
-                        {% if file.size < 1024 %}
+        <div class="run-section">
 
-                            {{ file.size }} B
+            <div>
 
-                        {% elif file.size < 1048576 %}
-
-                            {{ file.size|filesizeformat }}
-
-                        {% else %}
-
-                            {{ file.size|filesizeformat }}
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <div>
-
-                        <a
-                            href="#"
-                            class="view-button"
-                        >
-                            View
-                        </a>
-
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <div class="empty-state">
-
-                <div class="empty-icon">
-                    📁
-                </div>
-
-                <h2>
-                    No Generated Files Yet
+                <h2 class="run-title">
+                    ▶ Run Generated Application
                 </h2>
 
-                <p>
-                    Run the AgentForge pipeline to generate
-                    project files.
+                <p class="run-description">
+                    Start the generated Django application
+                    and test it in your browser.
                 </p>
 
             </div>
 
-        {% endif %}
+
+            <form
+                method="post"
+                action="{% url 'run-project-application' project.id %}"
+                target="_blank"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-success"
+                >
+                    ▶ Run Application
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
 

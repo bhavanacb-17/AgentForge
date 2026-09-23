@@ -1,0 +1,69 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}
+History - {{ project.name }}
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:1000px;margin:40px auto;padding:0 24px;">
+
+    <a href="{% url 'project-workspace' project.id %}">
+        ← Back to Workspace
+    </a>
+
+    <h1>Project History</h1>
+
+    <p>
+        Activity history for
+        <strong>{{ project.name }}</strong>.
+    </p>
+
+    {% if history %}
+
+        {% for item in history %}
+
+            <div
+                style="
+                    background:white;
+                    border:1px solid #eaecf0;
+                    border-radius:12px;
+                    padding:18px;
+                    margin:12px 0;
+                "
+            >
+
+                <strong>
+                    {{ item.event_type }}
+                </strong>
+
+                <p>
+                    {{ item.description }}
+                </p>
+
+                <small>
+                    {{ item.created_at|date:"d M Y, H:i" }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div
+            style="
+                padding:50px;
+                text-align:center;
+                border:1px dashed #d0d5dd;
+                border-radius:12px;
+            "
+        >
+            No project history yet.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
