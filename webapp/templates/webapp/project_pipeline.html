@@ -1,0 +1,751 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}AI Pipeline | {{ project.name }}{% endblock %}
+
+{% block content %}
+
+<style>
+    .pipeline-page {
+        max-width: 1200px;
+        margin: auto;
+        padding: 35px 24px 60px;
+    }
+
+    .pipeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        gap: 20px;
+    }
+
+    .back-link {
+        color: #667085;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .back-link:hover {
+        color: #4f46e5;
+    }
+
+    .pipeline-header h1 {
+        margin: 10px 0 6px;
+        font-size: 32px;
+        color: #101828;
+    }
+
+    .pipeline-header p {
+        margin: 0;
+        color: #667085;
+    }
+
+    .run-button {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 13px 22px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .run-button:hover {
+        background: #4338ca;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 16px rgba(16, 24, 40, 0.05);
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: 750;
+        color: #101828;
+        margin-bottom: 20px;
+    }
+
+    .agent-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .agent-card {
+        border: 1px solid #eaecf0;
+        border-radius: 14px;
+        padding: 18px;
+        background: #fcfcfd;
+    }
+
+    .agent-number {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .agent-name {
+        font-weight: 700;
+        color: #101828;
+        margin-bottom: 8px;
+    }
+
+    .agent-description {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #667085;
+    }
+
+    .completed {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #ecfdf3;
+        color: #027a48;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .summary-card {
+        border: 1px solid #eaecf0;
+        border-radius: 14px;
+        padding: 20px;
+        background: #fcfcfd;
+    }
+
+    .summary-label {
+        color: #667085;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #101828;
+    }
+
+    .success {
+        color: #039855;
+    }
+
+    .failure {
+        color: #d92d20;
+    }
+
+    .success-box {
+        background: #ecfdf3;
+        border: 1px solid #abefc6;
+        color: #027a48;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 24px;
+        font-weight: 700;
+    }
+
+    .error-box {
+        background: #fef3f2;
+        border: 1px solid #fecdca;
+        color: #b42318;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 24px;
+    }
+
+    .result-section {
+        border: 1px solid #eaecf0;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        overflow: hidden;
+    }
+
+    .result-section summary {
+        padding: 16px;
+        cursor: pointer;
+        background: #fcfcfd;
+        font-weight: 700;
+        color: #344054;
+    }
+
+    .result-section summary:hover {
+        background: #f9fafb;
+    }
+
+    .result-content {
+        padding: 18px;
+        border-top: 1px solid #eaecf0;
+    }
+
+    .result-content pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #344054;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #667085;
+    }
+
+    .empty-icon {
+        font-size: 45px;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 1000px) {
+        .agent-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .summary-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .pipeline-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .agent-grid,
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="pipeline-page">
+
+    <div class="pipeline-header">
+
+        <div>
+
+            <a
+                href="{% url 'project-workspace' project.id %}"
+                class="back-link"
+            >
+                ← Back to Workspace
+            </a>
+
+            <h1>AI Agent Pipeline</h1>
+
+            <p>
+                {{ project.name }}
+                ·
+                {{ project.programming_language }}
+                ·
+                {{ project.framework }}
+                ·
+                {{ project.database }}
+            </p>
+
+        </div>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button type="submit" class="run-button">
+                ▶ Run Pipeline
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if error %}
+
+        <div class="error-box">
+
+            <strong>Pipeline Error</strong>
+
+            <br><br>
+
+            {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+    {% if result %}
+
+
+        {% if result.pipeline_status == "SUCCESS" %}
+
+            <div class="success-box">
+                ✓ AgentForge pipeline completed successfully.
+                Final validation passed.
+            </div>
+
+        {% else %}
+
+            <div class="error-box">
+                ✕ Pipeline completed with errors.
+                Review the results below.
+            </div>
+
+        {% endif %}
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Pipeline Summary
+            </div>
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Total Agents
+                    </div>
+
+                    <div class="summary-value">
+                        7
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Completed
+                    </div>
+
+                    <div class="summary-value success">
+                        7
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Final Validation
+                    </div>
+
+                    <div class="summary-value success">
+                        PASS
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Pipeline Status
+                    </div>
+
+                    <div
+                        class="summary-value
+                        {% if result.pipeline_status == 'SUCCESS' %}
+                            success
+                        {% else %}
+                            failure
+                        {% endif %}"
+                    >
+                        {{ result.pipeline_status }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    {% endif %}
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Agent Execution Pipeline
+        </div>
+
+
+        <div class="agent-grid">
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">1</div>
+
+                <div class="agent-name">
+                    Requirements Analysis
+                </div>
+
+                <div class="agent-description">
+                    Analyzes the user's requirements and defines
+                    functional and non-functional requirements.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">2</div>
+
+                <div class="agent-name">
+                    Architect
+                </div>
+
+                <div class="agent-description">
+                    Designs the software architecture, technology
+                    stack and data flow.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">3</div>
+
+                <div class="agent-name">
+                    Developer
+                </div>
+
+                <div class="agent-description">
+                    Generates the application source code,
+                    configuration and tests.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">4</div>
+
+                <div class="agent-name">
+                    Tester
+                </div>
+
+                <div class="agent-description">
+                    Examines the generated project and identifies
+                    testing requirements.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">5</div>
+
+                <div class="agent-name">
+                    Debugger
+                </div>
+
+                <div class="agent-description">
+                    Detects and repairs implementation and
+                    technology compatibility problems.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">6</div>
+
+                <div class="agent-name">
+                    Code Reviewer
+                </div>
+
+                <div class="agent-description">
+                    Reviews the final generated project for
+                    quality and maintainability.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="agent-card">
+
+                <div class="agent-number">7</div>
+
+                <div class="agent-name">
+                    Documentation
+                </div>
+
+                <div class="agent-description">
+                    Generates documentation for architecture,
+                    installation, usage and testing.
+                </div>
+
+                <span class="completed">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    {% if result %}
+
+        <div class="card">
+
+            <div class="card-title">
+                Final Validation
+            </div>
+
+
+            <details class="result-section" open>
+
+                <summary>
+                    Technology Validation
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.final_technology_validation }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Python Validation
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.final_python_validation }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Deterministic Repair
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.deterministic_repair }}</pre>
+
+                </div>
+
+            </details>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Agent Results
+            </div>
+
+
+            <details class="result-section" open>
+
+                <summary>
+                    Requirements Analysis
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.requirements_analysis }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Architecture
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.architect }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Developer
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.developer }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Tester
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.tester }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Debugger
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.debugger }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Code Reviewer
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.code_reviewer }}</pre>
+
+                </div>
+
+            </details>
+
+
+            <details class="result-section">
+
+                <summary>
+                    Documentation
+                </summary>
+
+                <div class="result-content">
+
+                    <pre>{{ result.documentation }}</pre>
+
+                </div>
+
+            </details>
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="card">
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🤖
+                </div>
+
+                <h2>
+                    Ready to Build
+                </h2>
+
+                <p>
+                    Run the AgentForge pipeline to let the seven
+                    specialized agents analyze, design, develop,
+                    test, debug, review and document your project.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

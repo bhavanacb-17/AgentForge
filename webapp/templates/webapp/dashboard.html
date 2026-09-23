@@ -1,0 +1,224 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}AgentForge | Projects{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:35px;
+    ">
+
+        <div>
+            <h1 style="font-size:34px; margin-bottom:8px;">
+                My Projects
+            </h1>
+
+            <p style="color:#667085;">
+                Build, manage and develop software with AI agents.
+            </p>
+        </div>
+
+        <a href="#" class="btn btn-primary">
+            + New Project
+        </a>
+
+    </div>
+
+
+    {% if projects %}
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:22px;
+        ">
+
+            {% for project in projects %}
+
+                <div style="
+                    background:white;
+                    border:1px solid #e7eaf0;
+                    border-radius:16px;
+                    padding:25px;
+                    min-height:250px;
+                    display:flex;
+                    flex-direction:column;
+                    justify-content:space-between;
+                ">
+
+                    <div>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                            margin-bottom:18px;
+                        ">
+
+                            <div style="
+                                width:44px;
+                                height:44px;
+                                border-radius:12px;
+                                background:#eeecff;
+                                color:#635bff;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                font-weight:700;
+                            ">
+                                {{ project.name|first|upper }}
+                            </div>
+
+                            <span style="
+                                font-size:12px;
+                                padding:5px 10px;
+                                border-radius:20px;
+                                background:#ecfdf3;
+                                color:#027a48;
+                            ">
+                                {{ project.status|title }}
+                            </span>
+
+                        </div>
+
+
+                        <h2 style="
+                            font-size:19px;
+                            margin-bottom:10px;
+                        ">
+                            {{ project.name }}
+                        </h2>
+
+
+                        <p style="
+                            color:#667085;
+                            font-size:14px;
+                            line-height:1.6;
+                        ">
+                            {{ project.description|default:"No description provided." }}
+                        </p>
+
+
+                        <div style="
+                            margin-top:18px;
+                            display:flex;
+                            gap:8px;
+                            flex-wrap:wrap;
+                        ">
+
+                            {% if project.programming_language %}
+                                <span style="
+                                    padding:5px 9px;
+                                    background:#f2f4f7;
+                                    border-radius:6px;
+                                    font-size:12px;
+                                ">
+                                    {{ project.programming_language }}
+                                </span>
+                            {% endif %}
+
+                            {% if project.framework %}
+                                <span style="
+                                    padding:5px 9px;
+                                    background:#f2f4f7;
+                                    border-radius:6px;
+                                    font-size:12px;
+                                ">
+                                    {{ project.framework }}
+                                </span>
+                            {% endif %}
+
+                            {% if project.database %}
+                                <span style="
+                                    padding:5px 9px;
+                                    background:#f2f4f7;
+                                    border-radius:6px;
+                                    font-size:12px;
+                                ">
+                                    {{ project.database }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div style="
+                        margin-top:25px;
+                        padding-top:18px;
+                        border-top:1px solid #eef0f4;
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                    ">
+
+                        <span style="
+                            color:#98a2b3;
+                            font-size:12px;
+                        ">
+                            Updated {{ project.updated_at|date:"M d, Y" }}
+                        </span>
+
+                        <a
+    href="{% url 'project-workspace' project.id %}"
+    class="btn btn-primary"
+    style="padding:8px 14px;"
+>
+    Open Project →
+</a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div style="
+            background:white;
+            border:1px solid #e7eaf0;
+            border-radius:18px;
+            padding:70px;
+            text-align:center;
+        ">
+
+            <div style="
+                font-size:50px;
+                margin-bottom:20px;
+            ">
+                🚀
+            </div>
+
+            <h2>No projects yet</h2>
+
+            <p style="
+                color:#667085;
+                margin-top:10px;
+            ">
+                Create your first AI-powered software project.
+            </p>
+
+            <a
+                href="#"
+                class="btn btn-primary"
+                style="margin-top:25px;"
+            >
+                Create Project
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

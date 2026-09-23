@@ -1,0 +1,6 @@
+Django==5.1.15
+djangorestframework
+mysqlclient
+requests
+python-dotenv
+google-genai

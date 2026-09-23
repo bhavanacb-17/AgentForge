@@ -1,0 +1,115 @@
+{% extends "webapp/base.html" %}
+
+{% block title %}AgentForge | AI Software Engineering{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width: 1100px;
+    margin: 90px auto;
+    padding: 20px;
+    text-align: center;
+">
+
+    <div style="
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 30px;
+        background: #eeecff;
+        color: #635bff;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 25px;
+    ">
+        ✦ AUTONOMOUS AI SOFTWARE ENGINEERING
+    </div>
+
+    <h1 style="
+        font-size: 58px;
+        line-height: 1.08;
+        letter-spacing: -2px;
+        margin-bottom: 24px;
+    ">
+        Build Software With
+        <span style="color:#635bff;"> AI Agents</span>
+    </h1>
+
+    <p style="
+        max-width: 720px;
+        margin: auto;
+        color: #667085;
+        font-size: 18px;
+        line-height: 1.7;
+    ">
+        AgentForge transforms your software requirements into
+        structured, tested and documented projects using a
+        coordinated team of specialized AI agents.
+    </p>
+
+    <div style="
+        margin-top: 35px;
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+    ">
+        <a href="/dashboard/" class="btn btn-primary">
+            Start Building →
+        </a>
+
+        <a href="/features/" class="btn btn-outline">
+            Explore Features
+        </a>
+    </div>
+
+    <div style="
+        margin-top: 80px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        text-align: left;
+    ">
+
+        <div style="
+            background:white;
+            border:1px solid #e7eaf0;
+            border-radius:16px;
+            padding:28px;
+        ">
+            <h3>Requirements Analysis</h3>
+            <p style="margin-top:10px;color:#667085;">
+                AI analyzes your requirements and transforms them
+                into structured software specifications.
+            </p>
+        </div>
+
+        <div style="
+            background:white;
+            border:1px solid #e7eaf0;
+            border-radius:16px;
+            padding:28px;
+        ">
+            <h3>Multi-Agent Development</h3>
+            <p style="margin-top:10px;color:#667085;">
+                Specialized agents collaborate across architecture,
+                development, testing and debugging.
+            </p>
+        </div>
+
+        <div style="
+            background:white;
+            border:1px solid #e7eaf0;
+            border-radius:16px;
+            padding:28px;
+        ">
+            <h3>Production-Ready Output</h3>
+            <p style="margin-top:10px;color:#667085;">
+                Generate source code, tests, documentation and
+                review results inside a project workspace.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
